@@ -1,0 +1,165 @@
+---
+- name: update apt cache
+  apt:
+    update_cache: yes
+  when: ansible_os_family == 'Debian'
+
+- name: install openssl and python-pip (Debian)
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - openssl
+  - python-pip
+  when: ansible_os_family == 'Debian'
+
+- name: install openssl and python-pip (Red Hat)
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - openssl
+  - python-pip
+  when: ansible_os_family == 'RedHat'
+
+- name: "create the {{ ler53_cert_dir }} directory"
+  file:
+    path: "{{ ler53_cert_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+
+- name: generate the private key
+  command: "openssl genrsa -out {{ ler53_cert_dir + '/' + ler53_key_file_name }} {{ ler53_key_size }}"
+  args:
+    creates: "{{ ler53_cert_dir + '/' + ler53_key_file_name }}"
+
+- name: set the private key file permissions
+  file:
+    path: "{{ ler53_cert_dir + '/' + ler53_key_file_name }}"
+    owner: "{{ ler53_cert_files_owner }}"
+    group: "{{ ler53_cert_files_group }}"
+    mode: "{{ ler53_cert_files_mode }}"
+
+- name: generate the CSR
+  command: "openssl req -new -sha256 -subj \"{{ ler53_cert_subject }}\" -key {{ ler53_cert_dir + '/' + ler53_key_file_name }} -out {{ ler53_cert_dir + '/' + ler53_csr_file_name }}"
+  args:
+    creates: "{{ ler53_cert_dir + '/' + ler53_csr_file_name }}"
+
+- name: set the CSR file permissions
+  file:
+    path: "{{ ler53_cert_dir + '/' + ler53_csr_file_name }}"
+    owner: "{{ ler53_cert_files_owner }}"
+    group: "{{ ler53_cert_files_group }}"
+    mode: "{{ ler53_cert_files_mode }}"
+
+- name: "create the {{ ler53_account_key_dir }} directory"
+  file:
+    path: "{{ ler53_account_key_dir }}"
+    owner: root
+    group: root
+    mode: 0700
+    state: directory
+
+- name: generate the Let's Encrypt account key
+  command: "openssl genrsa -out {{ ler53_account_key_dir + '/' + ler53_account_key_file_name }} {{ ler53_account_key_size }}"
+  args:
+    creates: "{{ ler53_account_key_dir + '/' + ler53_account_key_file_name }}"
+
+- name: set the Let's Encrypt account key file permissions
+  file:
+    path: "{{ ler53_account_key_dir + '/' + ler53_account_key_file_name }}"
+    owner: root
+    group: root
+    mode: 0600
+
+- name: install the latest boto (python dependency) using pip
+  pip:
+    name: boto
+    state: latest
+
+- name: initiate the Let's Encrypt challenge
+  letsencrypt:
+    acme_directory: https://acme-v01.api.letsencrypt.org/directory
+    challenge: dns-01
+    account_key: "{{ ler53_account_key_dir + '/' + ler53_account_key_file_name }}"
+    csr: "{{ ler53_cert_dir + '/' + ler53_csr_file_name }}"
+    dest: "{{ ler53_cert_dir + '/' + ler53_cert_file_name }}"
+    account_email: "{{ ler53_account_email }}"
+    remaining_days: "{{ ler53_cert_remaining_days_before_renewal }}"
+  register: lets_encrypt_challenge
+
+- name: create the DNS record for the challenge
+  route53:
+    command: create
+    zone: "{{ ler53_route_53_domain }}"
+    record: "_acme-challenge.{{ ler53_cert_common_name }}"
+    type: TXT
+    ttl: 5
+    value: "\"{{ lets_encrypt_challenge['challenge_data'][ler53_cert_common_name]['dns-01']['resource_value'] }}\""
+    aws_access_key: "{{ ler53_aws_access_key }}"
+    aws_secret_key: "{{ ler53_aws_secret_key }}"
+    overwrite: yes
+    wait: yes
+  when: lets_encrypt_challenge['changed']
+
+- name: validate the Let's Encrypt challenge
+  letsencrypt:
+    acme_directory: https://acme-v01.api.letsencrypt.org/directory
+    challenge: dns-01
+    account_key: "{{ ler53_account_key_dir + '/' + ler53_account_key_file_name }}"
+    csr: "{{ ler53_cert_dir + '/' + ler53_csr_file_name }}"
+    dest: "{{ ler53_cert_dir + '/' + ler53_cert_file_name }}"
+    account_email: "{{ ler53_account_email }}"
+    data: "{{ lets_encrypt_challenge }}"
+
+- name: delete the DNS record for the challenge
+  route53:
+    command: delete
+    zone: "{{ ler53_route_53_domain }}"
+    record: "_acme-challenge.{{ ler53_cert_common_name }}"
+    type: TXT
+    ttl: 5
+    value: "\"{{ lets_encrypt_challenge['challenge_data'][ler53_cert_common_name]['dns-01']['resource_value'] }}\""
+    aws_access_key: "{{ ler53_aws_access_key }}"
+    aws_secret_key: "{{ ler53_aws_secret_key }}"
+  when: lets_encrypt_challenge['changed']
+
+- name: set the cert file permissions
+  file:
+    path: "{{ ler53_cert_dir + '/' + ler53_cert_file_name }}"
+    owner: "{{ ler53_cert_files_owner }}"
+    group: "{{ ler53_cert_files_group }}"
+    mode: "{{ ler53_cert_files_mode }}"
+
+- name: download the Let's Encrypt certificate chain
+  get_url:
+    url: https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem
+    dest: "{{ ler53_cert_dir + '/' + ler53_chain_file_name }}"
+    owner: "{{ ler53_cert_files_owner }}"
+    group: "{{ ler53_cert_files_group }}"
+    mode: "{{ ler53_cert_files_mode }}"
+  register: ler53_chain_download_task
+  when: ler53_chain_download
+
+- name: get content of the certificate
+  command: "cat {{ ler53_cert_dir }}/{{ ler53_cert_file_name }}"
+  register: ler53_certificate_content
+  changed_when: false
+  when: ler53_chain_download
+
+- name: get content of the chain
+  command: "cat {{ ler53_cert_dir }}/{{ ler53_chain_file_name }}"
+  register: ler53_chain_content
+  changed_when: false
+  when: ler53_chain_download
+
+- name: create a file with the certificate and chain concatenated
+  copy:
+    content: "{{ ler53_certificate_content['stdout'] + '\n' + ler53_chain_content['stdout'] + '\n' }}"
+    dest: "{{ ler53_cert_dir + '/' + ler53_cert_and_chain_file_name }}"
+    owner: "{{ ler53_cert_files_owner }}"
+    group: "{{ ler53_cert_files_group }}"
+    mode: "{{ ler53_cert_files_mode }}"
+  when: ler53_chain_download
