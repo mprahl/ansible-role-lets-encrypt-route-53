@@ -7,6 +7,7 @@
 * **ler53_cert_file_name** now defaults to `{{ ler53_cert_common_name }}.crt`.
 * **ler53_intermediate_file_name** now defaults to `{{ ler53_cert_common_name }}.intermediate.crt`.
 * **ler53_cert_and_intermediate_file_name** now defaults to `{{ ler53_cert_common_name }}.pem`.
+* Ownership and permissions on **ler53_cert_dir** are now compatible with more *nix systems.
 
 ### v1.0.0
 * Initial release

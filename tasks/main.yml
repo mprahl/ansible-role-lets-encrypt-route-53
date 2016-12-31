@@ -27,8 +27,7 @@
     path: "{{ ler53_cert_dir }}"
     state: directory
     owner: root
-    group: root
-    mode: 0775
+    mode: 0755
 
 - name: generate the private key
   command: "openssl genrsa -out {{ ler53_cert_dir + '/' + ler53_key_file_name }} {{ ler53_key_size }}"
