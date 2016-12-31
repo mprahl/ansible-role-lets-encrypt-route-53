@@ -26,11 +26,11 @@ This role must be run by root or through sudo/become.
 * **ler53_key_size** - the size of the private key that is paired to the certificate being generated. This defaults to `2048`.
 * **ler53_cert_dir** - the path to the directory to store the private key, CSR, and certificate. This defaults to `/etc/ssl/{{ ler53_cert_common_name }}`.
 * **ler53_key_file_name** - the file name of the private key that is paired to the certificate being generated. This defaults to `{{ ler53_cert_common_name }}.key`.
-* **ler53_cert_file_name** - the file name of the certificate being generated. This defaults to `{{ ler53_cert_common_name }}.pem`.
+* **ler53_cert_file_name** - the file name of the certificate being generated. This defaults to `{{ ler53_cert_common_name }}.crt`.
 * **ler53_csr_file_name** - the file name of the certificate signing request (CSR) being generated. This defaults to `{{ ler53_cert_common_name }}.csr`.
-* **ler53_chain_download** - whether or not the Let's Encrypt certificate chain should be downloaded. This defaults to `true`.
-* **ler53_chain_file_name** - the file name of the certificate chain downloaded from Let's Encrypt. This defaults to `{{ ler53_cert_common_name }}.chain.pem`.
-* **ler53_cert_and_chain_file_name** - the name of the file created with the certificate and the chain concatenated together. This defaults to `{{ ler53_cert_common_name }}.cert.chain.pem`.
+* **ler53_intermediate_download** - whether or not the Let's Encrypt intermediate CA should be downloaded. This defaults to `true`.
+* **ler53_intermediate_file_name** - the file name of the intermediate CA downloaded from Let's Encrypt. This defaults to `{{ ler53_cert_common_name }}.intermediate.pem`.
+* **ler53_cert_and_intermediate_file_name** - the name of the file created with the certificate and the intermediate CA concatenated together. This defaults to `{{ ler53_cert_common_name }}.pem`.
 * **ler53_cert_files_mode** - the file mode/permissions to force on the private key, CSR, and certificate. This defaults to `0600`.
 * **ler53_cert_files_owner** - the file owner to force on the private key, CSR, and certificate. This defaults to `root`.
 * **ler53_cert_files_group** - the file group to force on the private key, CSR, and certificate. This defaults to `root`.

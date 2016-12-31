@@ -133,33 +133,33 @@
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
 
-- name: download the Let's Encrypt certificate chain
+- name: download the Let's Encrypt intermediate CA
   get_url:
     url: https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem
-    dest: "{{ ler53_cert_dir + '/' + ler53_chain_file_name }}"
+    dest: "{{ ler53_cert_dir + '/' + ler53_intermediate_file_name }}"
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
-  register: ler53_chain_download_task
-  when: ler53_chain_download
+  register: ler53_intermediate_download_task
+  when: ler53_intermediate_download
 
 - name: get content of the certificate
   command: "cat {{ ler53_cert_dir }}/{{ ler53_cert_file_name }}"
   register: ler53_certificate_content
   changed_when: false
-  when: ler53_chain_download
+  when: ler53_intermediate_download
 
-- name: get content of the chain
-  command: "cat {{ ler53_cert_dir }}/{{ ler53_chain_file_name }}"
-  register: ler53_chain_content
+- name: get content of the intermediate CA
+  command: "cat {{ ler53_cert_dir }}/{{ ler53_intermediate_file_name }}"
+  register: ler53_intermediate_content
   changed_when: false
-  when: ler53_chain_download
+  when: ler53_intermediate_download
 
-- name: create a file with the certificate and chain concatenated
+- name: create a file with the certificate and intermediate CA concatenated
   copy:
-    content: "{{ ler53_certificate_content['stdout'] + '\n' + ler53_chain_content['stdout'] + '\n' }}"
-    dest: "{{ ler53_cert_dir + '/' + ler53_cert_and_chain_file_name }}"
+    content: "{{ ler53_certificate_content['stdout'] + '\n' + ler53_intermediate_content['stdout'] + '\n' }}"
+    dest: "{{ ler53_cert_dir + '/' + ler53_cert_and_intermediate_file_name }}"
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
-  when: ler53_chain_download
+  when: ler53_intermediate_download

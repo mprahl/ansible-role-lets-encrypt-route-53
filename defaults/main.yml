@@ -9,11 +9,11 @@ ler53_cert_subject: "/C={{ ler53_cert_country }}/ST={{ ler53_cert_state }}/L={{ 
 ler53_key_size: 2048
 ler53_cert_dir: "/etc/ssl/{{ ler53_cert_common_name }}"
 ler53_key_file_name: "{{ ler53_cert_common_name }}.key"
-ler53_cert_file_name: "{{ ler53_cert_common_name }}.pem"
+ler53_cert_file_name: "{{ ler53_cert_common_name }}.crt"
 ler53_csr_file_name: "{{ ler53_cert_common_name }}.csr"
-ler53_chain_download: true
-ler53_chain_file_name: "{{ ler53_cert_common_name }}.chain.pem"
-ler53_cert_and_chain_file_name: "{{ ler53_cert_common_name }}.cert.chain.pem"
+ler53_intermediate_download: true
+ler53_intermediate_file_name: "{{ ler53_cert_common_name }}.intermediate.crt"
+ler53_cert_and_intermediate_file_name: "{{ ler53_cert_common_name }}.pem"
 ler53_cert_files_mode: 0600
 ler53_cert_files_owner: root
 ler53_cert_files_group: root
