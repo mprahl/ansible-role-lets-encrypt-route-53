@@ -4,22 +4,22 @@
     update_cache: yes
   when: ansible_os_family == 'Debian'
 
-- name: install openssl and python-pip (Debian)
+- name: install openssl and python-boto (Debian)
   apt:
     name: "{{ item }}"
     state: present
   with_items:
   - openssl
-  - python-pip
+  - python-boto
   when: ansible_os_family == 'Debian'
 
-- name: install openssl and python-pip (Red Hat)
+- name: install openssl and python-boto (Red Hat) (Requires EPEL)
   yum:
     name: "{{ item }}"
     state: present
   with_items:
   - openssl
-  - python-pip
+  - python-boto
   when: ansible_os_family == 'RedHat'
 
 - name: "create the {{ ler53_cert_dir }} directory"
@@ -72,11 +72,6 @@
     owner: root
     group: root
     mode: 0600
-
-- name: install the latest boto (python dependency) using pip
-  pip:
-    name: boto
-    state: latest
 
 - name: initiate the Let's Encrypt challenge
   letsencrypt:

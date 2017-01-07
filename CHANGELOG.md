@@ -1,5 +1,8 @@
 # Change Log
 
+### v3.0.0
+* Install the python-boto package instead of pip.
+
 ### v2.0.0
 * **ler53_intermediate_download** replaced **ler53_chain_download**.
 * **ler53_intermediate_file_name** replaced **ler53_chain_file_name**.

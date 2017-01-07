@@ -1,8 +1,9 @@
 # lets-encrypt-route-53
 
 This is an Ansible role that automates the generation of Let's Encrypt signed certificates with DNS challenges on Amazon's Route 53 (AWS).
-Please note that as part of this role, `openssl` will be installed as well as the latest [boto](https://github.com/boto/boto),
-which is a Python module that is used to interact with AWS.
+Please note that as part of this role, `openssl` will be installed as well as [python-boto](https://github.com/boto/boto),
+which is a Python module that is used to interact with AWS. If you are not using this role on Debian/Ubuntu or CentOS/Red Hat (requires EPEL installed),
+`boto` must be installed manually before using this role.
 
 ## Requirements
 
