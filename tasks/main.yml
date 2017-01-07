@@ -30,7 +30,7 @@
     mode: 0755
 
 - name: generate the private key
-  command: "openssl genrsa -out {{ ler53_cert_dir + '/' + ler53_key_file_name }} {{ ler53_key_size }}"
+  command: "openssl genrsa -out \"{{ ler53_cert_dir + '/' + ler53_key_file_name }}\" {{ ler53_key_size }}"
   args:
     creates: "{{ ler53_cert_dir + '/' + ler53_key_file_name }}"
 
@@ -42,7 +42,7 @@
     mode: "{{ ler53_cert_files_mode }}"
 
 - name: generate the CSR
-  command: "openssl req -new -sha256 -subj \"{{ ler53_cert_subject }}\" -key {{ ler53_cert_dir + '/' + ler53_key_file_name }} -out {{ ler53_cert_dir + '/' + ler53_csr_file_name }}"
+  command: "openssl req -new -sha256 -subj \"/CN={{ ler53_cert_common_name }}\" -key \"{{ ler53_cert_dir + '/' + ler53_key_file_name }}\" -out \"{{ ler53_cert_dir + '/' + ler53_csr_file_name }}\""
   args:
     creates: "{{ ler53_cert_dir + '/' + ler53_csr_file_name }}"
 
@@ -62,7 +62,7 @@
     state: directory
 
 - name: generate the Let's Encrypt account key
-  command: "openssl genrsa -out {{ ler53_account_key_dir + '/' + ler53_account_key_file_name }} {{ ler53_account_key_size }}"
+  command: "openssl genrsa -out \"{{ ler53_account_key_dir + '/' + ler53_account_key_file_name }}\" {{ ler53_account_key_size }}"
   args:
     creates: "{{ ler53_account_key_dir + '/' + ler53_account_key_file_name }}"
 

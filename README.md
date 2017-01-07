@@ -18,12 +18,6 @@ This role must be run by root or through sudo/become.
 
 #### Optional Variables
 * **ler53_cert_common_name** - the common name for the SSL certificate being generated. This defaults to the value of `ansible_fqdn`.
-* **ler53_cert_country** - the country specified in the certificate's subject. This defaults to `US`.
-* **ler53_cert_state** - the state specified in the certificate's subject. This defaults to `MA`.
-* **ler53_cert_locality** - the locality/city specified in the certificate's subject. This defaults to `Boston`.
-* **ler53_cert_organization** - the organization specified in the certificate's subject. This defaults to `NA`.
-* **ler53_cert_subject** - the subject on the generated certificate. When this is not specified, it is properly constructed with the values of
-`ler53_cert_common_name`, `ler53_cert_country`, `ler53_cert_state`, `ler53_cert_locality`, and `ler53_cert_organization`.
 * **ler53_key_size** - the size of the private key that is paired to the certificate being generated. This defaults to `2048`.
 * **ler53_cert_dir** - the path to the directory to store the private key, CSR, and certificate. This defaults to `/etc/ssl/{{ ler53_cert_common_name }}`.
 * **ler53_key_file_name** - the file name of the private key that is paired to the certificate being generated. This defaults to `{{ ler53_cert_common_name }}.key`.
