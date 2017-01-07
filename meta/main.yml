@@ -10,14 +10,9 @@ galaxy_info:
     - any
   galaxy_tags:
   - letsencrypt
-  - let's encrypt
-  - route 53
   - route53
   - aws
-  - amazon
   - dns
   - ssl
-  - certs
-  - certificates
 
 dependencies: []
