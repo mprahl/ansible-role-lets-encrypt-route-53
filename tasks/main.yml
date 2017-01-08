@@ -22,6 +22,15 @@
   - python-boto
   when: ansible_os_family == 'RedHat'
 
+- name: install openssl and py27-boto (FreeBSD)
+  pkgng:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - openssl
+  - py27-boto
+  when: ansible_os_family == 'FreeBSD'
+
 - name: "create the {{ ler53_cert_dir }} directory"
   file:
     path: "{{ ler53_cert_dir }}"
@@ -57,7 +66,6 @@
   file:
     path: "{{ ler53_account_key_dir }}"
     owner: root
-    group: root
     mode: 0700
     state: directory
 
@@ -70,7 +78,6 @@
   file:
     path: "{{ ler53_account_key_dir + '/' + ler53_account_key_file_name }}"
     owner: root
-    group: root
     mode: 0600
 
 - name: initiate the Let's Encrypt challenge

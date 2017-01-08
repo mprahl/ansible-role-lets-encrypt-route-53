@@ -1,5 +1,8 @@
 # Change Log
 
+### Unreleased
+* Prerequisite packages are now installed on FreeBSD.
+
 ### v3.0.0
 * Install the python-boto package instead of pip.
 * Removed the variables **ler53_cert_country**, **ler53_cert_state**, **ler53_cert_locality**, and **ler53_cert_organization** since these aren't used by Let's Encrypt (thanks stevenringo).
