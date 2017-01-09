@@ -109,6 +109,17 @@
     remaining_days: "{{ ler53_cert_remaining_days_before_renewal }}"
   register: lets_encrypt_challenge
 
+- name: Get the DNS records for the challenge
+  route53:
+    command: get
+    zone: "{{ ler53_route_53_domain }}"
+    record: "{{ ler53_cert_common_name }}"
+    aws_access_key: "{{ ler53_aws_access_key }}"
+    aws_secret_key: "{{ ler53_aws_secret_key }}"
+    wait: yes
+    type: CNAME
+  register: dns
+
 - name: create the DNS records for the challenge
   route53:
     command: create
@@ -144,6 +155,19 @@
     aws_access_key: "{{ ler53_aws_access_key }}"
     aws_secret_key: "{{ ler53_aws_secret_key }}"
   with_dict: "{{ lets_encrypt_challenge['challenge_data'] | default({}) }}"
+
+- name: Re add the previous DNS records for the challenge
+  route53:
+    command: create
+    zone: "{{ ler53_route_53_domain }}"
+    record: "{{ dns.set.record }}"
+    type: "{{ dns.set.type }}"
+    ttl: "{{ dns.set.ttl }}"
+    value: "{{ dns.set.value }}"
+    aws_access_key: "{{ ler53_aws_access_key }}"
+    aws_secret_key: "{{ ler53_aws_secret_key }}"
+    overwrite: yes
+    wait: yes
 
 - name: set the cert file permissions
   file:
