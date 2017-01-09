@@ -18,6 +18,9 @@ This role must be run by root or through sudo/become.
 
 #### Optional Variables
 * **ler53_cert_common_name** - the common name for the SSL certificate being generated. This defaults to the value of `ansible_fqdn`.
+* **ler53_cert_sans** - a list of DNS subject alternative names (SAN's) of the same domain as specified in `ler53_route_53_domain` to include in the CSR.
+Please note that a DNS SAN for the value of `ler53_cert_common_name` is automatically added and should not be added to this list. This variable is not defined by default.
+* **ler53_cert_key_usages** - a list of key usages to include in the CSR (Let's Encrypt may restrict some). This defaults to `digitalSignature` and `keyEncipherment`.
 * **ler53_key_size** - the size of the private key that is paired to the certificate being generated. This defaults to `2048`.
 * **ler53_cert_dir** - the path to the directory to store the private key, CSR, and certificate. This defaults to `/etc/ssl/{{ ler53_cert_common_name }}`.
 * **ler53_key_file_name** - the file name of the private key that is paired to the certificate being generated. This defaults to `{{ ler53_cert_common_name }}.key`.

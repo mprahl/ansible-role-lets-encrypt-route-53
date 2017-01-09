@@ -1,0 +1,16 @@
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+
+[ req_distinguished_name ]
+
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = {{ ler53_cert_key_usages | join(', ') }}
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = {{ ler53_cert_common_name }}
+{% for san in ler53_cert_sans %}
+DNS.{{ loop.index + 1 }} = {{ san }}
+{% endfor %}

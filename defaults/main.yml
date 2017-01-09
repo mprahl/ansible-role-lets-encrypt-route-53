@@ -1,6 +1,10 @@
 ---
 ler53_cert_remaining_days_before_renewal: 10
 ler53_cert_common_name: "{{ ansible_fqdn }}"
+ler53_cert_sans: []
+ler53_cert_key_usages:
+- digitalSignature
+- keyEncipherment
 ler53_key_size: 2048
 ler53_cert_dir: "/etc/ssl/{{ ler53_cert_common_name }}"
 ler53_key_file_name: "{{ ler53_cert_common_name }}.key"
