@@ -1,6 +1,6 @@
 # Change Log
 
-### Unreleased
+### v3.1.0
 * Prerequisite packages are now installed on FreeBSD.
 * Added the ability to specify SAN's for the same domain.
 * Added the ability specify the key usage.
