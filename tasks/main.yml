@@ -50,18 +50,12 @@
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
 
-- name: check if the CSR exists
-  stat:
-    path: "{{ ler53_cert_dir + '/' + ler53_csr_file_name }}"
-  register: ler53_csr_stat
-
 - name: create the OpenSSL configuration file for the CSR
   template:
     src: openssl-request.conf.j2
     dest: "{{ ler53_cert_dir }}/openssl-request.conf"
     owner: root
     mode: 0600
-  when: not ler53_csr_stat.stat.exists
 
 - name: generate the CSR
   command: "openssl req -new -sha256 -subj \"/CN={{ ler53_cert_common_name }}\" -config \"{{ ler53_cert_dir }}/openssl-request.conf\"  -key \"{{ ler53_cert_dir + '/' + ler53_key_file_name }}\" -out \"{{ ler53_cert_dir + '/' + ler53_csr_file_name }}\""
@@ -109,17 +103,6 @@
     remaining_days: "{{ ler53_cert_remaining_days_before_renewal }}"
   register: lets_encrypt_challenge
 
-- name: Get the DNS records for the challenge
-  route53:
-    command: get
-    zone: "{{ ler53_route_53_domain }}"
-    record: "{{ ler53_cert_common_name }}"
-    aws_access_key: "{{ ler53_aws_access_key }}"
-    aws_secret_key: "{{ ler53_aws_secret_key }}"
-    wait: yes
-    type: CNAME
-  register: dns
-
 - name: create the DNS records for the challenge
   route53:
     command: create
@@ -155,19 +138,6 @@
     aws_access_key: "{{ ler53_aws_access_key }}"
     aws_secret_key: "{{ ler53_aws_secret_key }}"
   with_dict: "{{ lets_encrypt_challenge['challenge_data'] | default({}) }}"
-
-- name: Re add the previous DNS records for the challenge
-  route53:
-    command: create
-    zone: "{{ ler53_route_53_domain }}"
-    record: "{{ dns.set.record }}"
-    type: "{{ dns.set.type }}"
-    ttl: "{{ dns.set.ttl }}"
-    value: "{{ dns.set.value }}"
-    aws_access_key: "{{ ler53_aws_access_key }}"
-    aws_secret_key: "{{ ler53_aws_secret_key }}"
-    overwrite: yes
-    wait: yes
 
 - name: set the cert file permissions
   file:
@@ -206,3 +176,18 @@
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
   when: ler53_intermediate_download
+
+- name: Upload Certificate
+  iam_cert:
+    aws_access_key: "{{ ler53_aws_access_key }}"
+    aws_secret_key: "{{ ler53_aws_secret_key }}"
+    name: "{{ env }}-{{ ansible_date_time.date }}-{{ ansible_date_time.hour }}-{{ ansible_date_time.minute }}-{{ ansible_date_time.second }}"
+    state: present
+    cert: "{{ ler53_cert_dir + '/' + ler53_cert_file_name }}"
+    key: "{{ ler53_cert_dir + '/' + ler53_key_file_name }}"
+    cert_chain: "{{ ler53_cert_dir + '/' + ler53_intermediate_file_name }}"
+
+- name: delete the OpenSSL certificate directory
+  file:
+    path: "{{ ler53_cert_dir }}"
+    state: absent
