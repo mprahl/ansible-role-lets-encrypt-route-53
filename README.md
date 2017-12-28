@@ -38,6 +38,8 @@ Please view the [Let's Encrypt Module](https://docs.ansible.com/ansible/letsencr
 * **ler53_account_key_dir** - the path to the directory to store the Let's Encrypt account key. This defaults to `/etc/ssl/lets_encrypt`.
 * **ler53_account_key_file_name** - the file name of the Let's Encrypt account key. This defaults to `lets_encrypt_account.key`.
 * **ler53_cert_remaining_days_before_renewal** - the minimum number of days left of the current certificate being valid until it is renewed. This defaults to `10`.
+* **ler53_agreement** - overwrite the default URL to the Let's Encrypt agreement. This is useful when the
+Let's Encrypt agreement changes and the version of Ansible you are using has an outdated default.
 
 ## Example Playbook
 

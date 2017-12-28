@@ -107,6 +107,7 @@
     dest: "{{ ler53_cert_dir + '/' + ler53_cert_file_name }}"
     account_email: "{{ ler53_account_email }}"
     remaining_days: "{{ ler53_cert_remaining_days_before_renewal }}"
+    agreement: "{{ ler53_agreement | default(omit) }}"
   register: lets_encrypt_challenge
 
 - name: create the DNS records for the challenge
