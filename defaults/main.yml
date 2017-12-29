@@ -20,3 +20,4 @@ ler53_account_email: ''
 ler53_account_key_size: 2048
 ler53_account_key_dir: /etc/ssl/lets_encrypt
 ler53_account_key_file_name: lets_encrypt_account.key
+ler53_new_cert_when_csr_changes: false

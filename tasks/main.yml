@@ -69,6 +69,7 @@
     common_name: "{{ ler53_cert_common_name }}"
     key_usage: "{{ ler53_cert_key_usages }}"
     subject_alt_name: "DNS:{{ ler53_cert_common_name }}{{ ',DNS:' + ',DNS:'.join(ler53_cert_sans) if ler53_cert_sans else '' }}"
+  register: generate_csr
 
 - name: set the CSR file permissions
   file:
@@ -87,6 +88,12 @@
     path: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
     owner: root
     mode: 0600
+
+- name: delete existing certificate
+  file:
+    path: "{{ ler53_cert_dir }}/{{ ler53_cert_file_name }}"
+    state: absent
+  when: generate_csr.changed and ler53_new_cert_when_csr_changes
 
 - name: initiate the Let's Encrypt challenge
   letsencrypt:
