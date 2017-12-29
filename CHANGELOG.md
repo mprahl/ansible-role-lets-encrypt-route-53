@@ -1,5 +1,11 @@
 # Change Log
 
+### v4.0.0
+* Allow specifying a custom URL to the Let's Encrypt agreement.
+* Migrated to the Ansible OpenSSL modules for idempotence (now installs pyOpenSSL).
+* RHEL and CentOS now use Python virtualenvs when installing boto and pyOpenSSL.
+* Added the ability to recreate a cert when the CSR changes.
+
 ### v3.1.0
 * Prerequisite packages are now installed on FreeBSD.
 * Added the ability to specify SAN's for the same domain.
