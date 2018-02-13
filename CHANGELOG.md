@@ -1,5 +1,8 @@
 # Change Log
 
+### v4.1.0
+* Added the ability to specify extended key usage on CSRs
+
 ### v4.0.0
 * Allow specifying a custom URL to the Let's Encrypt agreement.
 * Migrated to the Ansible OpenSSL modules for idempotence (now installs pyOpenSSL).
