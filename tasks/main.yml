@@ -69,6 +69,7 @@
     common_name: "{{ ler53_cert_common_name }}"
     key_usage: "{{ ler53_cert_key_usages }}"
     subject_alt_name: "DNS:{{ ler53_cert_common_name }}{{ ',DNS:' + ',DNS:'.join(ler53_cert_sans) if ler53_cert_sans else '' }}"
+    extended_key_usage: "{{ ler53_cert_extended_key_usages | default(omit) }}"
   register: generate_csr
 
 - name: set the CSR file permissions
