@@ -1,0 +1,6 @@
+---
+- name: handle services
+  service:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items: "{{ ler53_service_handlers }}"
