@@ -97,7 +97,7 @@
   when: generate_csr.changed and ler53_new_cert_when_csr_changes
 
 - name: initiate the Let's Encrypt challenge
-  letsencrypt:
+  acme_certificate:
     acme_directory: https://acme-v01.api.letsencrypt.org/directory
     challenge: dns-01
     account_key: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
@@ -124,7 +124,7 @@
   with_dict: "{{ lets_encrypt_challenge['challenge_data'] | default({}) }}"
 
 - name: validate the Let's Encrypt challenge
-  letsencrypt:
+  acme_certificate:
     acme_directory: https://acme-v01.api.letsencrypt.org/directory
     challenge: dns-01
     account_key: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
