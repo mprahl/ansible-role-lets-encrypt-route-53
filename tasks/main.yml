@@ -6,31 +6,28 @@
 
 - name: install the required dependencies (Debian)
   apt:
-    name: "{{ item }}"
+    name:
+    - openssl
+    - python-boto
+    - python-openssl
     state: present
-  with_items:
-  - openssl
-  - python-boto
-  - python-openssl
   when: ansible_os_family == 'Debian'
 
 - name: install the required dependencies (Red Hat) (Requires EPEL)
   yum:
-    name: "{{ item }}"
+    name:
+    - openssl
+    - python-pip
     state: present
-  with_items:
-  - openssl
-  - python-pip
   when: ansible_os_family == 'RedHat'
 
 - name: install the required dependencies (FreeBSD)
   pkgng:
-    name: "{{ item }}"
+    name:
+    - openssl
+    - py27-boto
+    - py27-openssl
     state: present
-  with_items:
-  - openssl
-  - py27-boto
-  - py27-openssl
   when: ansible_os_family == 'FreeBSD'
 
 - name: "create the {{ ler53_cert_dir }} directory"
