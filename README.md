@@ -13,7 +13,9 @@ or FreeBSD, `openssl`, `boto`, and `pyOpenSSL` must be installed manually before
 
 ## Requirements
 
-This role must be run by root or through sudo/become.
+Ansible 2.7+ is required for this role. If you are using an older version of
+Ansible, use version 4.2.1 of this role. This role also must be run by root or
+through sudo/become.
 
 ## Role Variables
 

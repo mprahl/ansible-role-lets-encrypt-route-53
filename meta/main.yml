@@ -2,7 +2,7 @@ galaxy_info:
   author: Matt Prahl
   description: automates the generation of Let's Encrypt signed certificates with DNS challenges on Amazon's Route 53 (AWS)
   license: MIT
-  min_ansible_version: 2.2
+  min_ansible_version: 2.7
   platforms:
   - name: GenericLinux
     versions:
