@@ -1,5 +1,9 @@
 # Change Log
 
+### v4.2.2
+* Require Ansible 2.7
+* Fix package installer deprecation warnings in Ansible 2.7
+
 ### v4.2.1
 * Use the acme_certificate module instead of the deprecated letsencrypt module
 
