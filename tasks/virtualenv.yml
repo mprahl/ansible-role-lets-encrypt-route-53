@@ -1,14 +1,13 @@
 ---
 - name: install the virtualenv requirements
   yum:
-    name: "{{ item }}"
+    name:
+    - python-virtualenv
+    - gcc
+    - python-devel
+    - openssl-devel
+    - libffi-devel
     state: present
-  with_items:
-  - python-virtualenv
-  - gcc
-  - python-devel
-  - openssl-devel
-  - libffi-devel
 
 - name: install pyOpenSSL and boto in a virtualenv
   pip:
