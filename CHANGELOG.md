@@ -1,5 +1,8 @@
 # Change Log
 
+### v4.2.1
+* Use the acme_certificate module instead of the deprecated letsencrypt module
+
 ### v4.2.0
 * Add the ability to run service handlers when a certificate is updated with **ler53_service_handlers**.
 
