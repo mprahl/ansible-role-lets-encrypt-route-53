@@ -162,19 +162,19 @@
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
   register: ler53_intermediate_download_task
-  when: ler53_intermediate_download == True
+  when: ler53_intermediate_download | bool
 
 - name: get content of the certificate
   command: "cat {{ ler53_cert_dir }}/{{ ler53_cert_file_name }}"
   register: ler53_certificate_content
   changed_when: false
-  when: ler53_intermediate_download == True
+  when: ler53_intermediate_download | bool
 
 - name: get content of the intermediate CA
   command: "cat {{ ler53_cert_dir }}/{{ ler53_intermediate_file_name }}"
   register: ler53_intermediate_content
   changed_when: false
-  when: ler53_intermediate_download == True
+  when: ler53_intermediate_download | bool
 
 - name: create a file with the certificate and intermediate CA concatenated
   copy:
@@ -183,4 +183,4 @@
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
-  when: ler53_intermediate_download == True
+  when: ler53_intermediate_download | bool
