@@ -129,6 +129,11 @@
     account_email: "{{ ler53_account_email }}"
     data: "{{ lets_encrypt_challenge }}"
   notify: handle services
+  register: lets_encrypt_validation_result
+
+- name: set the ler53_cert_changed fact
+  set_fact:
+    ler53_cert_changed: "{{ lets_encrypt_validation_result.changed | bool }}"
 
 - name: delete the DNS records for the challenge
   route53:

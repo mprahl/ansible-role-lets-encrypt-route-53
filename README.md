@@ -19,6 +19,9 @@ through sudo/become.
 
 ## Role Variables
 
+#### Facts Set By The Role
+* **ler53_cert_changed** - this is set to `True` when the certificate is created or renewed.
+
 #### Required Variables
 * **ler53_aws_access_key** - the access key to an AWS user that is allowed to add records to the domain the SSL certificate is being generated for.
 * **ler53_aws_secret_key** - the secret key to an AWS user that is allowed to add records to the domain the SSL certificate is being generated for.
