@@ -1,5 +1,10 @@
 # Change Log
 
+### v4.3.0
+* Set the `ler53_cert_changed` fact when the certificate is created or renewed
+* Notify `handle services` on validation instead of initiation
+* Fix deprecated when statements
+
 ### v4.2.2
 * Require Ansible 2.7
 * Fix package installer deprecation warnings in Ansible 2.7
