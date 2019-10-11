@@ -22,3 +22,6 @@ ler53_account_key_dir: /etc/ssl/lets_encrypt
 ler53_account_key_file_name: lets_encrypt_account.key
 ler53_new_cert_when_csr_changes: false
 ler53_service_handlers: []
+ler53_acme_version: 2
+ler53_acme_directory: "{% if ler53_acme_version == 1 %} https://acme-v01.api.letsencrypt.org/directory {% else %} https://acme-v02.api.letsencrypt.org/directory {% endif %}"
+ler53_terms_agreed: true

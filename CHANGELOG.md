@@ -1,5 +1,8 @@
 # Change Log
 
+### v4.3.1
+* Support ACMEv2 and make it default as v1 will be deprecated in November 2019 (https://community.letsencrypt.org/t/end-of-life-plan-for-acmev1/88430)
+
 ### v4.3.0
 * Set the `ler53_cert_changed` fact when the certificate is created or renewed
 * Notify `handle services` on validation instead of initiation
