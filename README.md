@@ -49,16 +49,12 @@ Please view the [Let's Encrypt Module](https://docs.ansible.com/ansible/letsencr
 * **ler53_account_key_dir** - the path to the directory to store the Let's Encrypt account key. This defaults to `/etc/ssl/lets_encrypt`.
 * **ler53_account_key_file_name** - the file name of the Let's Encrypt account key. This defaults to `lets_encrypt_account.key`.
 * **ler53_cert_remaining_days_before_renewal** - the minimum number of days left of the current certificate being valid until it is renewed. This defaults to `10`.
-* **ler53_agreement** - overwrite the default URL to the Let's Encrypt agreement. This is useful when the
-Let's Encrypt agreement changes and the version of Ansible you are using has an outdated default.
 * **ler53_new_cert_when_csr_changes** - delete the existing certificate when the CSR changes. This is useful
 when you change the common name or SANs on your certificate and you'd like to generate a new certificate
 without waiting for it to expire. This defaults to `false`.
 * **ler53_cert_extended_key_usages** - Additional restrictions (e.g. client authentication, server authentication) on the allowed purposes for which the public key may be used.
 * **ler53_service_handlers** - A list of dictionaries describing service handlers to run when a certificate is updated in the format of `{'name': 'httpd', 'state': 'restarted'}`.
-* **ler53_acme_version** - Version of the ACME protocol. Default is v2.
-* **ler53_acme_directory** - The ACME directory to use. This is the entry point URL to access CA server API. Defaults to `https://acme-v02.api.letsencrypt.org/directory`.
-* **ler53_terms_agreed** - Boolean indicating whether you agree to the terms of service document. ACME server for v2 requires this to be true, therefore default is `true`.
+* **ler53_acme_directory** - The ACME directory to use. This is the entry point URL to access CA server API. Defaults to the LetsEncrypt production stage `https://acme-v02.api.letsencrypt.org/directory`.
   
 ## Example Playbook
 
