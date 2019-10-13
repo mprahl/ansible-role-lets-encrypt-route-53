@@ -54,7 +54,7 @@ when you change the common name or SANs on your certificate and you'd like to ge
 without waiting for it to expire. This defaults to `false`.
 * **ler53_cert_extended_key_usages** - Additional restrictions (e.g. client authentication, server authentication) on the allowed purposes for which the public key may be used.
 * **ler53_service_handlers** - A list of dictionaries describing service handlers to run when a certificate is updated in the format of `{'name': 'httpd', 'state': 'restarted'}`.
-* **ler53_acme_directory** - The ACME directory to use. This is the entry point URL to access CA server API. Defaults to the LetsEncrypt production stage `https://acme-v02.api.letsencrypt.org/directory`.
+* **ler53_acme_directory** - The ACME directory to use. This defaults to `https://acme-v02.api.letsencrypt.org/directory`. This can be useful to override if you'd like to test this role against the stage Let's Encrypt instance.
   
 ## Example Playbook
 
