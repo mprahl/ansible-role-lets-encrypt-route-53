@@ -95,14 +95,15 @@
 
 - name: initiate the Let's Encrypt challenge
   acme_certificate:
-    acme_directory: https://acme-v01.api.letsencrypt.org/directory
+    acme_version: 2
+    acme_directory: "{{ ler53_acme_directory }}" 
     challenge: dns-01
     account_key: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
     csr: "{{ ler53_cert_dir }}/{{ ler53_csr_file_name }}"
     dest: "{{ ler53_cert_dir }}/{{ ler53_cert_file_name }}"
     account_email: "{{ ler53_account_email }}"
     remaining_days: "{{ ler53_cert_remaining_days_before_renewal }}"
-    agreement: "{{ ler53_agreement | default(omit) }}"
+    terms_agreed: yes
   register: lets_encrypt_challenge
 
 - name: create the DNS records for the challenge
@@ -121,7 +122,8 @@
 
 - name: validate the Let's Encrypt challenge
   acme_certificate:
-    acme_directory: https://acme-v01.api.letsencrypt.org/directory
+    acme_version: 2
+    acme_directory: "{{ ler53_acme_directory }}"
     challenge: dns-01
     account_key: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
     csr: "{{ ler53_cert_dir }}/{{ ler53_csr_file_name }}"
