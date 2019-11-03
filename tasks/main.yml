@@ -11,7 +11,7 @@
     - python3-boto
     - python3-openssl
     state: present
-  when: ansible_os_family == 'Debian' and ansible_python_version is version_compare('3', '>=')
+  when: ansible_os_family == 'Debian' and ansible_python_version is version('3', '>=')
 
 - name: install the required dependencies (Debian) python2
   apt:
@@ -20,7 +20,7 @@
     - python-boto
     - python-openssl
     state: present
-  when: ansible_os_family == 'Debian' and ansible_python_version is version_compare('3', '<')
+  when: ansible_os_family == 'Debian' and ansible_python_version is version('3', '<')
 
 - name: install the required dependencies (Red Hat) (Requires EPEL)
   yum:
