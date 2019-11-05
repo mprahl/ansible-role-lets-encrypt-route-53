@@ -4,14 +4,23 @@
     update_cache: yes
   when: ansible_os_family == 'Debian'
 
-- name: install the required dependencies (Debian)
+- name: install the required dependencies (Debian) python3
+  apt:
+    name:
+    - openssl
+    - python3-boto
+    - python3-openssl
+    state: present
+  when: ansible_os_family == 'Debian' and ansible_python_version is version('3', '>=')
+
+- name: install the required dependencies (Debian) python2
   apt:
     name:
     - openssl
     - python-boto
     - python-openssl
     state: present
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family == 'Debian' and ansible_python_version is version('3', '<')
 
 - name: install the required dependencies (Red Hat) (Requires EPEL)
   yum:
@@ -96,7 +105,7 @@
 - name: initiate the Let's Encrypt challenge
   acme_certificate:
     acme_version: 2
-    acme_directory: "{{ ler53_acme_directory }}" 
+    acme_directory: "{{ ler53_acme_directory }}"
     challenge: dns-01
     account_key: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
     csr: "{{ ler53_cert_dir }}/{{ ler53_csr_file_name }}"
