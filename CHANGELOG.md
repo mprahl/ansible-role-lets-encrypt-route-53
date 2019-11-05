@@ -1,5 +1,8 @@
 # Change Log
 
+### v4.4.1
+* Add Python 3 support for Debian based systems
+
 ### v4.4.0
 * Switch ACME protocol version to v2 as v1 will be deprecated in November 2019 (https://community.letsencrypt.org/t/end-of-life-plan-for-acmev1/88430)
 
