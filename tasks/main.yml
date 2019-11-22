@@ -65,6 +65,11 @@
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
 
+- name: check consistency of private key
+  openssl_privatekey_info:
+    path: "{{ ler53_cert_dir }}/{{ ler53_key_file_name }}"
+  register: result_privatekey
+
 - name: generate the CSR
   openssl_csr:
     path: "{{ ler53_cert_dir }}/{{ ler53_csr_file_name }}"
@@ -78,6 +83,11 @@
     mode: "{{ ler53_cert_files_mode }}"
   register: generate_csr
 
+- name: check consistency of the CSR key
+  openssl_csr_info:
+    path: "{{ ler53_cert_dir }}/{{ ler53_csr_file_name }}"
+  register: result_csr
+
 - name: generate the Let's Encrypt account key
   openssl_privatekey:
     path: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
@@ -85,6 +95,11 @@
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
+
+- name: check consistency of the account key
+  openssl_privatekey_info:
+    path: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
+  register: result_accountkey
 
 - name: delete existing certificate
   file:
@@ -185,3 +200,11 @@
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
   when: ler53_intermediate_download | bool
+
+- name: verify certificates
+  assert:
+    that:
+      - result_privatekey.key_is_consistent
+      - result_accountkey.key_is_consistent
+      - result_csr.signature_valid
+    msg: "all certificates are valid!"
