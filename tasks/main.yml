@@ -68,6 +68,10 @@
   import_tasks: virtualenv.yml
   when: ansible_os_family == 'RedHat'
 
+- name: "set hostname to {{ ler53_cert_common_name }}"
+  hostname:
+    name: "{{ ler53_cert_common_name }}"
+
 - name: generate the private key
   openssl_privatekey:
     path: "{{ ler53_cert_dir }}/{{ ler53_key_file_name }}"
