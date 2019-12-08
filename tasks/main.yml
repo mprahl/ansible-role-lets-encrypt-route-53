@@ -224,10 +224,10 @@
     mode: "{{ ler53_cert_files_mode }}"
   when: ler53_intermediate_download | bool
 
-- name: verify certificates
+- name: verify the private keys and CSR
   assert:
     that:
       - result_privatekey.key_is_consistent
       - result_accountkey.key_is_consistent
       - result_csr.signature_valid
-    msg: "all certificates are valid!"
+    msg: "The private keys and CSR are valid"
