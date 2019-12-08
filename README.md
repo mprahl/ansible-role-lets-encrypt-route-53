@@ -17,6 +17,11 @@ Ansible 2.7+ is required for this role. If you are using an older version of
 Ansible, use version 4.2.1 of this role. This role also must be run by root or
 through sudo/become.
 
+## Role tags
+
+* **install** - used for tagging the tasks that install the required dependencies.
+* **openssl** - used for tagging the tasks that generate the private keys and CSR.
+
 ## Role Variables
 
 #### Facts Set By The Role

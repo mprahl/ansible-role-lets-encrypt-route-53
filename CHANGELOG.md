@@ -1,5 +1,11 @@
 # Change Log
 
+### v4.5.0
+* Add the `install` tag
+* Add the `openssl` tag
+* Consolidate the tasks that were used to set permissions into the existing OpenSSL tasks
+* Verify the consistent of the private keys and CSR
+
 ### v4.4.1
 * Add Python 3 support for Debian based systems
 
