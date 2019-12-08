@@ -8,6 +8,8 @@
     - openssl-devel
     - libffi-devel
     state: present
+  tags:
+  - install
 
 - name: install pyOpenSSL and boto in a virtualenv
   pip:
@@ -27,6 +29,8 @@
   - name: enum34
   - name: ipaddress
   - name: cffi
+  tags:
+  - install
 
 - name: use the created virtualenv
   set_fact:

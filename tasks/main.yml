@@ -2,7 +2,10 @@
 - name: update apt cache
   apt:
     update_cache: yes
+    cache_valid_time: 3600
   when: ansible_os_family == 'Debian'
+  tags:
+  - install
 
 - name: install the required dependencies (Debian) python3
   apt:
@@ -12,6 +15,8 @@
     - python3-openssl
     state: present
   when: ansible_os_family == 'Debian' and ansible_python_version is version('3', '>=')
+  tags:
+  - install
 
 - name: install the required dependencies (Debian) python2
   apt:
@@ -21,6 +26,8 @@
     - python-openssl
     state: present
   when: ansible_os_family == 'Debian' and ansible_python_version is version('3', '<')
+  tags:
+  - install
 
 - name: install the required dependencies (Red Hat) (Requires EPEL)
   yum:
@@ -29,6 +36,8 @@
     - python-pip
     state: present
   when: ansible_os_family == 'RedHat'
+  tags:
+  - install
 
 - name: install the required dependencies (FreeBSD)
   pkgng:
@@ -38,6 +47,8 @@
     - py27-openssl
     state: present
   when: ansible_os_family == 'FreeBSD'
+  tags:
+  - install
 
 - name: "create the {{ ler53_cert_dir }} directory"
   file:
@@ -49,24 +60,30 @@
 - name: "create the {{ ler53_account_key_dir }} directory"
   file:
     path: "{{ ler53_account_key_dir }}"
+    state: directory
     owner: root
     mode: 0700
-    state: directory
 
-- include: virtualenv.yml
+- name: "importing virtualenv tasks"
+  import_tasks: virtualenv.yml
   when: ansible_os_family == 'RedHat'
 
 - name: generate the private key
   openssl_privatekey:
     path: "{{ ler53_cert_dir }}/{{ ler53_key_file_name }}"
     size: "{{ ler53_key_size }}"
-
-- name: set the private key file permissions
-  file:
-    path: "{{ ler53_cert_dir }}/{{ ler53_key_file_name }}"
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
+  tags:
+  - openssl
+
+- name: check consistency of private key
+  openssl_privatekey_info:
+    path: "{{ ler53_cert_dir }}/{{ ler53_key_file_name }}"
+  register: result_privatekey
+  tags:
+  - openssl
 
 - name: generate the CSR
   openssl_csr:
@@ -76,25 +93,36 @@
     key_usage: "{{ ler53_cert_key_usages }}"
     subject_alt_name: "DNS:{{ ler53_cert_common_name }}{{ ',DNS:' + ',DNS:'.join(ler53_cert_sans) if ler53_cert_sans else '' }}"
     extended_key_usage: "{{ ler53_cert_extended_key_usages | default(omit) }}"
-  register: generate_csr
-
-- name: set the CSR file permissions
-  file:
-    path: "{{ ler53_cert_dir }}/{{ ler53_csr_file_name }}"
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
+  register: generate_csr
+  tags:
+  - openssl
+
+- name: check consistency of the CSR key
+  openssl_csr_info:
+    path: "{{ ler53_cert_dir }}/{{ ler53_csr_file_name }}"
+  register: result_csr
+  tags:
+  - openssl
 
 - name: generate the Let's Encrypt account key
   openssl_privatekey:
     path: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
     size: "{{ ler53_account_key_size }}"
+    owner: "{{ ler53_cert_files_owner }}"
+    group: "{{ ler53_cert_files_group }}"
+    mode: "{{ ler53_cert_files_mode }}"
+  tags:
+  - openssl
 
-- name: set the Let's Encrypt account key file permissions
-  file:
+- name: check consistency of the account key
+  openssl_privatekey_info:
     path: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
-    owner: root
-    mode: 0600
+  register: result_accountkey
+  tags:
+  - openssl
 
 - name: delete existing certificate
   file:
@@ -195,3 +223,11 @@
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
   when: ler53_intermediate_download | bool
+
+- name: verify certificates
+  assert:
+    that:
+      - result_privatekey.key_is_consistent
+      - result_accountkey.key_is_consistent
+      - result_csr.signature_valid
+    msg: "all certificates are valid!"
