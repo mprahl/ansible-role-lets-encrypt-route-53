@@ -1,5 +1,8 @@
 # Change Log
 
+### v4.5.1
+* Fix the verification step for wildcard common names
+
 ### v4.5.0
 * Add the `install` tag
 * Add the `openssl` tag
