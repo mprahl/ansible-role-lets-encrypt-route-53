@@ -149,7 +149,7 @@
   route53:
     command: create
     zone: "{{ ler53_route_53_domain }}"
-    record: "_acme-challenge.{{ item.key }}"
+    record: "{{ item.value['dns-01']['record'] }}"
     type: TXT
     ttl: 5
     value: "\"{{ item.value['dns-01']['resource_value'] }}\""
@@ -180,7 +180,7 @@
   route53:
     command: delete
     zone: "{{ ler53_route_53_domain }}"
-    record: "_acme-challenge.{{ item.key }}"
+    record: "{{ item.value['dns-01']['record'] }}"
     type: TXT
     ttl: 5
     value: "\"{{ item.value['dns-01']['resource_value'] }}\""
