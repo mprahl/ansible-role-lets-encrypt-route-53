@@ -149,15 +149,17 @@
   route53:
     command: create
     zone: "{{ ler53_route_53_domain }}"
-    record: "{{ item.value['dns-01']['record'] }}"
+    record: "{{ ler53_item.value['dns-01']['record'] }}"
     type: TXT
     ttl: 5
-    value: "\"{{ item.value['dns-01']['resource_value'] }}\""
+    value: "\"{{ ler53_item.value['dns-01']['resource_value'] }}\""
     aws_access_key: "{{ ler53_aws_access_key }}"
     aws_secret_key: "{{ ler53_aws_secret_key }}"
     overwrite: yes
     wait: yes
   with_dict: "{{ lets_encrypt_challenge['challenge_data'] | default({}) }}"
+  loop_control:
+    loop_var: ler53_item
 
 - name: validate the Let's Encrypt challenge
   acme_certificate:
@@ -180,13 +182,15 @@
   route53:
     command: delete
     zone: "{{ ler53_route_53_domain }}"
-    record: "{{ item.value['dns-01']['record'] }}"
+    record: "{{ ler53_item.value['dns-01']['record'] }}"
     type: TXT
     ttl: 5
-    value: "\"{{ item.value['dns-01']['resource_value'] }}\""
+    value: "\"{{ ler53_item.value['dns-01']['resource_value'] }}\""
     aws_access_key: "{{ ler53_aws_access_key }}"
     aws_secret_key: "{{ ler53_aws_secret_key }}"
   with_dict: "{{ lets_encrypt_challenge['challenge_data'] | default({}) }}"
+  loop_control:
+    loop_var: ler53_item
 
 - name: set the cert file permissions
   file:
