@@ -13,9 +13,9 @@
 
 - name: install pyOpenSSL and boto in a virtualenv
   pip:
-    name: "{{ item.name }}"
-    state: "{{ item.state | default(omit) }}"
-    version: "{{ item.version | default(omit) }}"
+    name: "{{ ler53_item.name }}"
+    state: "{{ ler53_item.state | default(omit) }}"
+    version: "{{ ler53_item.version | default(omit) }}"
     virtualenv: "{{ ler53_account_key_dir }}/ansible-lets-encrypt-virtualenv"
     # This is required for libselinux-python
     virtualenv_site_packages: yes
@@ -29,6 +29,8 @@
   - name: enum34
   - name: ipaddress
   - name: cffi
+  loop_control:
+    loop_var: ler53_item
   tags:
   - install
 
