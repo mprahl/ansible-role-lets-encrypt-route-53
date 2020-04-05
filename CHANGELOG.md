@@ -1,5 +1,8 @@
 # Change Log
 
+### v4.5.2
+* Allow calling the role in a loop by setting explicit variable names for the loops in the role
+
 ### v4.5.1
 * Fix the verification step for wildcard common names
 
