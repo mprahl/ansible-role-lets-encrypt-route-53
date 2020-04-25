@@ -4,11 +4,11 @@ This is an Ansible role that automates the generation of Let's Encrypt signed ce
 Amazon's Route 53 (AWS).
 
 Please note that as part of this role, `openssl`, [boto](https://github.com/boto/boto), and
-[pyOpenSSL](https://github.com/pyca/pyopenssl) will be installed. If you are using CentOS/Red Hat, the role will
+[pyOpenSSL](https://github.com/pyca/pyopenssl) will be installed. If you are using CentOS/Red Hat/ Mac OS, the role will
 install `pip` (requires [EPEL](https://fedoraproject.org/wiki/EPEL)) and then install `boto` and `pyOpenSSL` in a
 Python virtualenv instead because the packaged version of `pyOpenSSL` is not recent enough.
 
-If you are not using this role on Debian/Ubuntu, CentOS/Red Hat,
+If you are not using this role on Debian/Ubuntu, CentOS/Red Hat, Mac OS,
 or FreeBSD, `openssl`, `boto`, and `pyOpenSSL` must be installed manually before using this role.
 
 ## Requirements
@@ -60,7 +60,7 @@ without waiting for it to expire. This defaults to `false`.
 * **ler53_cert_extended_key_usages** - Additional restrictions (e.g. client authentication, server authentication) on the allowed purposes for which the public key may be used.
 * **ler53_service_handlers** - A list of dictionaries describing service handlers to run when a certificate is updated in the format of `{'name': 'httpd', 'state': 'restarted'}`.
 * **ler53_acme_directory** - The ACME directory to use. This defaults to `https://acme-v02.api.letsencrypt.org/directory`. This can be useful to override if you'd like to test this role against the stage Let's Encrypt instance.
-  
+
 ## Example Playbook
 
 ```yaml
