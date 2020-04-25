@@ -1,5 +1,5 @@
 ---
-- name: install the virtualenv requirements
+- name: install the virtualenv requirements (Red Hat)
   yum:
     name:
     - python-virtualenv
@@ -8,10 +8,19 @@
     - openssl-devel
     - libffi-devel
     state: present
+  when: ansible_os_family == 'RedHat'
   tags:
   - install
 
-- name: install pyOpenSSL and boto in a virtualenv
+- name: install virtualenv (MacOS)
+  pip:
+    name: virtualenv
+    state: present
+  when: ansible_os_family == 'Darwin'
+  tags:
+  - install
+
+- name: install pyOpenSSL and boto in a virtualenv (Red Hat/ MacOS)
   pip:
     name: "{{ ler53_item.name }}"
     state: "{{ ler53_item.state | default(omit) }}"
