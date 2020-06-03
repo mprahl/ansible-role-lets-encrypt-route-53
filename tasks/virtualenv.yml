@@ -24,7 +24,6 @@
   - name: setuptools
     state: latest
   - name: pyOpenSSL
-    version: 17.5.0
   - name: boto
   - name: enum34
   - name: ipaddress
