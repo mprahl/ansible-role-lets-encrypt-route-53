@@ -1,5 +1,8 @@
 # Change Log
 
+### v4.5.3
+* Pin the version of setuptools in the RHEL/CentOS virtualenv to continue supporting Python 2
+
 ### v4.5.2
 * Allow calling the role in a loop by setting explicit variable names for the loops in the role
 
