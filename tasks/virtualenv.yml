@@ -21,8 +21,8 @@
     virtualenv_site_packages: yes
   with_items:
   # Update setuptools
-  - name: setuptools
-    state: latest
+  - name: setuptools>44.0.0,<45.0.0
+    state: present
   - name: pyOpenSSL
   - name: boto
   - name: enum34
