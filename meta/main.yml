@@ -6,10 +6,9 @@ galaxy_info:
   license: MIT
   min_ansible_version: 2.7
   platforms:
+  - name: FreeBSD
   - name: GenericLinux
-    versions:
-    - all
-    - any
+  - name: macOS
   galaxy_tags:
   - letsencrypt
   - route53
