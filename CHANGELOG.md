@@ -1,5 +1,8 @@
 # Change Log
 
+### v4.6.0
+* Add support for MacOS
+
 ### v4.5.3
 * Pin the version of setuptools in the RHEL/CentOS virtualenv to continue supporting Python 2
 
