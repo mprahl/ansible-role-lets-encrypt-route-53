@@ -1,5 +1,8 @@
 # Change Log
 
+### v4.6.1
+* Add the "install" tag to the "use the created virtualenv" task
+
 ### v4.6.0
 * Add support for MacOS
 
