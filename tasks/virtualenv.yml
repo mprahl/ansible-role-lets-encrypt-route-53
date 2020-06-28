@@ -45,3 +45,5 @@
 - name: use the created virtualenv
   set_fact:
     ansible_python_interpreter: "{{ ler53_account_key_dir }}/ansible-lets-encrypt-virtualenv/bin/python"
+  tags:
+  - install
