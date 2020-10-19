@@ -42,9 +42,9 @@
   tags:
   - install
 
-- name: Record python interpreter
+- name: Set python interpreter revert flag
   set_fact:
-    python_interpreter: "{{ ansible_python_interpreter }}"
+    revert_python_interpreter: true
   tags:
     - install
 
