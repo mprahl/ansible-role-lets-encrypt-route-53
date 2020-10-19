@@ -252,4 +252,4 @@
 - name: "Revert python interpreter"
   set_fact:
     ansible_python_interpreter: "{{ ansible_facts['discovered_interpreter_python'] }}"
-  when: revert_python_interpreter
+  when: revert_python_interpreter is defined and revert_python_interpreter == true
