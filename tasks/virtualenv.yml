@@ -42,6 +42,12 @@
   tags:
   - install
 
+- name: Record python interpreter
+  set_fact:
+    python_interpreter: "{{ ansible_python_interpreter }}"
+  tags:
+    - install
+
 - name: use the created virtualenv
   set_fact:
     ansible_python_interpreter: "{{ ler53_account_key_dir }}/ansible-lets-encrypt-virtualenv/bin/python"

@@ -248,3 +248,8 @@
       - result_accountkey.key_is_consistent
       - result_csr.signature_valid
     msg: "The private keys and CSR are valid"
+
+- name: "Revert python interpreter"
+  set_fact:
+    ansible_python_interpreter: "{{ python_interpreter }}"
+  when: python_interpreter is defined
