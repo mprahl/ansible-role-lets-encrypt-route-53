@@ -1,5 +1,8 @@
 # Change Log
 
+### v4.7.0
+* Use the new R3 intermediate CA ([#33](https://github.com/mprahl/ansible-role-lets-encrypt-route-53/issues/33))
+
 ### v4.6.1
 * Add the "install" tag to the "use the created virtualenv" task
 
