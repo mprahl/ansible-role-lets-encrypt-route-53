@@ -182,6 +182,7 @@
     dest: "{{ ler53_cert_dir }}/{{ ler53_cert_file_name }}"
     account_email: "{{ ler53_account_email }}"
     data: "{{ lets_encrypt_challenge }}"
+    remaining_days: "{{ ler53_cert_remaining_days_before_renewal }}"
   notify: handle services
   register: lets_encrypt_validation_result
 
@@ -244,7 +245,7 @@
 - name: verify the private keys and CSR
   assert:
     that:
-      - result_privatekey.key_is_consistent
-      - result_accountkey.key_is_consistent
-      - result_csr.signature_valid
+    - result_privatekey.key_is_consistent
+    - result_accountkey.key_is_consistent
+    - result_csr.signature_valid
     msg: "The private keys and CSR are valid"
