@@ -32,8 +32,11 @@ Ansible 2.7+ is required for this role. If you are using an older version of Ans
   domain the SSL certificate is being generated for.
 * **ler53_aws_secret_key** - the secret key to an AWS user that is allowed to add records to the
   domain the SSL certificate is being generated for.
-* **ler53_route_53_domain** - the Route 53 (AWS) domain/zone the SSL certificate is being generated
-  for.
+* **ler53_route_53_domain** - the Route 53 (AWS) domain the SSL certificate is being generated
+  for. This is a required parameter, if parameter `ler53_route_53_zone_id` is not supplied.
+* **ler53_route_53_zone_id** - the Route 53 (AWS) zone_id the SSL certificate is being generated
+  for. This is a required parameter, if parameter `ler53_route_53_domain` is not supplied. Use
+  this parameter if you don't have the AWS rights to perform route53:ListHostedZones.
 
 #### Optional Variables
 * **ler53_cert_common_name** - the common name for the SSL certificate being generated. This

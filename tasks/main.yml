@@ -159,7 +159,8 @@
 - name: create the DNS records for the challenge
   route53:
     command: create
-    zone: "{{ ler53_route_53_domain }}"
+    zone: "{{ ler53_route_53_domain | default(omit) }}"
+    hosted_zone_id: "{{ ler53_route_53_zone_id | default(omit) }}"
     record: "{{ ler53_item.value['dns-01']['record'] }}"
     type: TXT
     ttl: 5
@@ -192,7 +193,8 @@
 - name: delete the DNS records for the challenge
   route53:
     command: delete
-    zone: "{{ ler53_route_53_domain }}"
+    zone: "{{ ler53_route_53_domain | default(omit) }}"
+    hosted_zone_id: "{{ ler53_route_53_zone_id | default(omit) }}"
     record: "{{ ler53_item.value['dns-01']['record'] }}"
     type: TXT
     ttl: 5
