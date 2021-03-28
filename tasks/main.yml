@@ -53,8 +53,8 @@
   pkgng:
     name:
     - openssl
-    - py27-boto
-    - py27-openssl
+    - py37-boto
+    - py37-openssl
     state: present
   when: ansible_os_family == 'FreeBSD'
   tags:
