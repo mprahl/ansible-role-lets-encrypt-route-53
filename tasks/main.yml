@@ -22,7 +22,7 @@
   apt:
     name:
     - openssl
-    - python-boto
+    - python-botocore
     - python-openssl
     state: present
   when: ansible_os_family == 'Debian' and ansible_python_version is version('3', '<')
