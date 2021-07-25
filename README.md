@@ -59,6 +59,8 @@ Ansible 2.7+ is required for this role. If you are using an older version of Ans
   This defaults to `{{ ler53_cert_common_name }}.csr`.
 * **ler53_intermediate_download** - whether or not the Let's Encrypt intermediate CA should be
   downloaded. This defaults to `true`.
+* **ler53_intermediate_download_url** - the URL to download the Let's Encrypt intermediate CA. This
+  defaults to `https://letsencrypt.org/certs/lets-encrypt-r3-cross-signed.pem`.
 * **ler53_intermediate_file_name** - the file name of the intermediate CA downloaded from Let's
   Encrypt. This defaults to `{{ ler53_cert_common_name }}.intermediate.pem`.
 * **ler53_cert_and_intermediate_file_name** - the name of the file created with the certificate and

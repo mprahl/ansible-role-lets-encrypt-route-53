@@ -1,5 +1,13 @@
 # Change Log
 
+### v5.0.0
+* Add support for RHEL 8
+* Use Python 3.7 packages for FreeBSD
+* Add support for the zone ID `route53` option for accounts with limited Route
+  53 permissions
+* Add the ability to change the intermediate CA to download
+* Fix a bug in the Let's Encrypt challenge verification step
+
 ### v4.7.0
 * Use the new R3 intermediate CA ([#33](https://github.com/mprahl/ansible-role-lets-encrypt-route-53/issues/33))
 
