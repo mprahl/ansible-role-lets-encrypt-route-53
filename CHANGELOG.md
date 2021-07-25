@@ -1,5 +1,8 @@
 # Change Log
 
+### v5.1.0
+* Determine the correct FreeBSD Python packages automatically
+
 ### v5.0.0
 * Add support for RHEL 8
 * Use Python 3.7 packages for FreeBSD
