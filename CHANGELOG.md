@@ -1,5 +1,8 @@
 # Change Log
 
+### v5.1.1
+* Replace expired Let's Encrypt intermediate certificate (#42)
+
 ### v5.1.0
 * Determine the correct FreeBSD Python packages automatically
 
