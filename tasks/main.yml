@@ -102,6 +102,7 @@
 - name: check consistency of private key
   openssl_privatekey_info:
     path: "{{ ler53_cert_dir }}/{{ ler53_key_file_name }}"
+    check_consistency: yes
   register: result_privatekey
   tags:
   - openssl
@@ -141,6 +142,7 @@
 - name: check consistency of the account key
   openssl_privatekey_info:
     path: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
+    check_consistency: yes
   register: result_accountkey
   tags:
   - openssl
