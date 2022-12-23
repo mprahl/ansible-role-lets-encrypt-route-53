@@ -53,7 +53,7 @@
   pkgng:
     name:
     - openssl
-    - "py{{ ansible_python.version.major }}{{ ansible_python.version.minor }}-boto"
+    - "py{{ ansible_python.version.major }}{{ ansible_python.version.minor }}-boto3"
     - "py{{ ansible_python.version.major }}{{ ansible_python.version.minor }}-openssl"
     state: present
   when: ansible_os_family == 'FreeBSD'
