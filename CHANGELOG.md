@@ -1,5 +1,9 @@
 # Change Log
 
+### v5.2.0 and Newer
+
+See the change log in the GitHub release notes.
+
 ### v5.1.2
 
 - Support newer versions of the `openssl_privatekey_info` Ansible module (#43)
