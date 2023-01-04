@@ -96,6 +96,7 @@
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
+  when: not ler53_unmanaged_private_key
   tags:
   - openssl
 

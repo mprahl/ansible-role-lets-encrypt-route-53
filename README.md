@@ -92,6 +92,8 @@ Ansible 2.7+ is required for this role. If you are using an older version of Ans
 * **ler53_acme_directory** - The ACME directory to use. This defaults to
   `https://acme-v02.api.letsencrypt.org/directory`. This can be useful to override if you'd like to
   test this role against the stage Let's Encrypt instance.
+* **ler53_unmanaged_private_key** - whether or not reuse the private key. If this is `true` private key
+  will only be generated if not existing yet. This defaults to `false`.
 
 ## Example Playbook
 
