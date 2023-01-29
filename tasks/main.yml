@@ -75,14 +75,16 @@
   file:
     path: "{{ ler53_cert_dir }}"
     state: directory
-    owner: root
+    owner: "{{ ler53_cert_files_owner }}"
+    group: "{{ ler53_cert_files_group }}"
     mode: 0755
 
 - name: "create the {{ ler53_account_key_dir }} directory"
   file:
     path: "{{ ler53_account_key_dir }}"
     state: directory
-    owner: root
+    owner: "{{ ler53_cert_files_owner }}"
+    group: "{{ ler53_cert_files_group }}"
     mode: 0700
 
 - name: "importing virtualenv tasks"
