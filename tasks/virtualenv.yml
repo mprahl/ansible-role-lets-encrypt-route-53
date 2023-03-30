@@ -46,7 +46,7 @@
   - name: setuptools>44.0.0,<45.0.0
     state: present
   - name: pyOpenSSL
-  - name: boto
+  - name: boto3
   - name: enum34
   - name: ipaddress
   - name: cffi
@@ -54,6 +54,12 @@
     loop_var: ler53_item
   tags:
   - install
+
+- name: Set python interpreter revert flag
+  set_fact:
+    revert_python_interpreter: true
+  tags:
+    - install
 
 - name: use the created virtualenv
   set_fact:

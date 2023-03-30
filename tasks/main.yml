@@ -11,8 +11,9 @@
   apt:
     name:
     - openssl
-    - python3-boto
+    - python3-boto3
     - python3-openssl
+    - python3-cryptography
     state: present
   when: ansible_os_family == 'Debian' and ansible_python_version is version('3', '>=')
   tags:
@@ -22,7 +23,7 @@
   apt:
     name:
     - openssl
-    - python-boto
+    - python-botocore
     - python-openssl
     state: present
   when: ansible_os_family == 'Debian' and ansible_python_version is version('3', '<')
@@ -265,3 +266,8 @@
     - result_accountkey.key_is_consistent
     - result_csr.signature_valid
     msg: "The private keys and CSR are valid"
+
+- name: "Revert python interpreter"
+  set_fact:
+    ansible_python_interpreter: "{{ ansible_facts['discovered_interpreter_python'] }}"
+  when: revert_python_interpreter is defined and revert_python_interpreter == true
