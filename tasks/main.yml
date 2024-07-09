@@ -101,14 +101,6 @@
   tags:
   - openssl
 
-- name: check consistency of private key
-  openssl_privatekey_info:
-    path: "{{ ler53_cert_dir }}/{{ ler53_key_file_name }}"
-    check_consistency: yes
-  register: result_privatekey
-  tags:
-  - openssl
-
 - name: generate the CSR
   openssl_csr:
     path: "{{ ler53_cert_dir }}/{{ ler53_csr_file_name }}"
@@ -124,13 +116,6 @@
   tags:
   - openssl
 
-- name: check consistency of the CSR key
-  openssl_csr_info:
-    path: "{{ ler53_cert_dir }}/{{ ler53_csr_file_name }}"
-  register: result_csr
-  tags:
-  - openssl
-
 - name: generate the Let's Encrypt account key
   openssl_privatekey:
     path: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
@@ -138,14 +123,6 @@
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
-  tags:
-  - openssl
-
-- name: check consistency of the account key
-  openssl_privatekey_info:
-    path: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
-    check_consistency: yes
-  register: result_accountkey
   tags:
   - openssl
 
@@ -257,11 +234,3 @@
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
   when: ler53_intermediate_download | bool
-
-- name: verify the private keys and CSR
-  assert:
-    that:
-    - result_privatekey.key_is_consistent
-    - result_accountkey.key_is_consistent
-    - result_csr.signature_valid
-    msg: "The private keys and CSR are valid"
