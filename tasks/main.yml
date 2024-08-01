@@ -175,6 +175,7 @@
     account_email: "{{ ler53_account_email }}"
     data: "{{ lets_encrypt_challenge }}"
     remaining_days: "{{ ler53_cert_remaining_days_before_renewal }}"
+    chain_dest: "{{ ler53_cert_dir }}/{{ ler53_intermediate_file_name }}"
   notify: handle services
   register: lets_encrypt_validation_result
 
@@ -204,15 +205,15 @@
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
 
-- name: download the Let's Encrypt intermediate CA
-  get_url:
-    url: "{{ ler53_intermediate_download_url }}"
-    dest: "{{ ler53_cert_dir }}/{{ ler53_intermediate_file_name }}"
-    owner: "{{ ler53_cert_files_owner }}"
-    group: "{{ ler53_cert_files_group }}"
-    mode: "{{ ler53_cert_files_mode }}"
-  register: ler53_intermediate_download_task
-  when: ler53_intermediate_download | bool
+# - name: download the Let's Encrypt intermediate CA
+#   get_url:
+#     url: "{{ ler53_intermediate_download_url }}"
+#     dest: "{{ ler53_cert_dir }}/{{ ler53_intermediate_file_name }}"
+#     owner: "{{ ler53_cert_files_owner }}"
+#     group: "{{ ler53_cert_files_group }}"
+#     mode: "{{ ler53_cert_files_mode }}"
+#   register: ler53_intermediate_download_task
+#   when: ler53_intermediate_download | bool
 
 - name: get content of the certificate
   command: "cat {{ ler53_cert_dir }}/{{ ler53_cert_file_name }}"
