@@ -10,7 +10,6 @@ ler53_cert_dir: "/etc/ssl/{{ ler53_cert_common_name }}"
 ler53_key_file_name: "{{ ler53_cert_common_name }}.key"
 ler53_cert_file_name: "{{ ler53_cert_common_name }}.crt"
 ler53_csr_file_name: "{{ ler53_cert_common_name }}.csr"
-ler53_intermediate_download: true
 ler53_intermediate_file_name: "{{ ler53_cert_common_name }}.intermediate.crt"
 ler53_cert_and_intermediate_file_name: "{{ ler53_cert_common_name }}.pem"
 ler53_cert_files_mode: 0600
@@ -23,4 +22,3 @@ ler53_account_key_file_name: lets_encrypt_account.key
 ler53_new_cert_when_csr_changes: false
 ler53_service_handlers: []
 ler53_acme_directory: https://acme-v02.api.letsencrypt.org/directory
-ler53_intermediate_download_url: https://letsencrypt.org/certs/lets-encrypt-r3.pem
