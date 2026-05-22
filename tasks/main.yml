@@ -1,46 +1,28 @@
 ---
-- name: update apt cache
-  ansible.builtin.apt:
-    update_cache: true
-    cache_valid_time: 3600
-  when: ansible_os_family == 'Debian'
-  tags:
-  - install
+- name: check required Python dependencies
+  ansible.builtin.command:
+    argv:
+    - "{{ ansible_facts['python']['executable'] }}"
+    - -c
+    - "import boto3, botocore, cryptography"
+  register: ler53_python_dependency_check
+  changed_when: false
+  failed_when: false
 
-- name: install the required dependencies (Debian)
-  ansible.builtin.apt:
-    name:
-    - openssl
-    - python3-boto3
-    - python3-cryptography
-    - python3-openssl
-    state: present
-  when: ansible_os_family == 'Debian'
-  tags:
-  - install
-
-- name: install the required dependencies (Red Hat 8+)
-  ansible.builtin.yum:
-    name:
-    - openssl
-    - python3-pip
-    state: present
-  when:
-  - ansible_os_family == 'RedHat'
-  - ansible_distribution_major_version is version('8', '>=')
-  tags:
-  - install
-
-- name: install the required dependencies (MacOS)
-  community.general.homebrew:
-    name:
-    - openssl@3
-    - python3
-    state: present
-  become: false
-  when: ansible_os_family == 'Darwin'
-  tags:
-  - install
+- name: fail when required Python dependencies are missing
+  ansible.builtin.assert:
+    that:
+    - ler53_python_dependency_check.rc == 0
+    fail_msg: >-
+      Missing Python dependencies for this role. Install boto3, botocore,
+      and cryptography for
+      {{ ansible_facts['python']['executable'] }} on the managed host before
+      running the role. Original error:
+      {{
+        ler53_python_dependency_check.stderr
+        | default(ler53_python_dependency_check.stdout, true)
+        | trim
+      }}
 
 - name: "create the {{ ler53_cert_dir }} directory"
   ansible.builtin.file:
@@ -57,10 +39,6 @@
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
     mode: '0700'
-
-- name: include virtualenv tasks
-  ansible.builtin.include_tasks: virtualenv.yml
-  when: ansible_os_family == 'Darwin' or (ansible_os_family == 'RedHat' and ansible_distribution_major_version is version('8', '>='))
 
 - name: generate the private key
   community.crypto.openssl_privatekey:

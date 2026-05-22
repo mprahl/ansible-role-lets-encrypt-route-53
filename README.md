@@ -3,14 +3,8 @@
 This is an Ansible role that automates the generation of Let's Encrypt signed certificates with DNS
 challenges on Amazon's Route 53 (AWS).
 
-When this role manages dependencies for you, Debian-family systems install `openssl`,
-`python3-boto3`, `python3-cryptography`, and `python3-openssl` from distribution packages. Red Hat
-Enterprise Linux 8+ and macOS use a Python 3 virtualenv for the AWS and crypto Python libraries
-required by the role.
-
-If you are not using this role on Debian/Ubuntu, Red Hat Enterprise Linux 8+, or macOS, you must
-install `openssl`, `boto3`, `botocore`, and a recent Python crypto stack manually before using the
-role.
+This role assumes the required Python and crypto dependencies are already installed on the managed
+host. It does not create a virtualenv or install host packages.
 
 ## Requirements
 
@@ -19,12 +13,22 @@ Ansible 2.14+ is required for this role. This role also must be run by root or t
 The role uses modules from these collections:
 
 ```bash
-ansible-galaxy collection install amazon.aws community.crypto community.general
+ansible-galaxy collection install amazon.aws community.crypto
 ```
+
+The managed host must provide:
+
+- Python 3 for the interpreter running Ansible modules on the host
+- `cryptography >= 3.3`
+- `boto3`
+- `botocore`
+
+Install these prerequisites using your operating system packages or your preferred Python packaging
+workflow before running the role. The role performs an early import check for
+these Python libraries and fails with a clear error if they are missing.
 
 ## Role tags
 
-* **install** - used for tagging the tasks that install the required dependencies.
 * **openssl** - used for tagging the tasks that generate the private keys and CSR.
 
 ## Role Variables
@@ -41,7 +45,7 @@ ansible-galaxy collection install amazon.aws community.crypto community.general
 
 #### Optional Variables
 * **ler53_cert_common_name** - the common name for the SSL certificate being generated. This
-  defaults to the value of `ansible_fqdn`.
+  defaults to the value of `ansible_facts['fqdn']`.
 * **ler53_cert_sans** - a list of DNS subject alternative names (SAN's) of the same domain as
   specified in `ler53_route_53_domain` to include in the CSR. Please note that a DNS SAN for the
   value of `ler53_cert_common_name` is automatically added and should not be added to this list.
