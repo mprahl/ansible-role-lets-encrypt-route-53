@@ -12,7 +12,7 @@ ler53_cert_file_name: "{{ ler53_cert_common_name }}.crt"
 ler53_csr_file_name: "{{ ler53_cert_common_name }}.csr"
 ler53_intermediate_file_name: "{{ ler53_cert_common_name }}.intermediate.crt"
 ler53_cert_and_intermediate_file_name: "{{ ler53_cert_common_name }}.pem"
-ler53_cert_files_mode: 0600
+ler53_cert_files_mode: '0600'
 ler53_cert_files_owner: root
 ler53_cert_files_group: root
 ler53_account_email: ''

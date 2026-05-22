@@ -1,8 +1,8 @@
 ---
 - name: handle services
-  service:
+  ansible.builtin.service:
     name: "{{ ler53_item.name }}"
     state: "{{ ler53_item.state }}"
-  with_items: "{{ ler53_service_handlers }}"
+  loop: "{{ ler53_service_handlers }}"
   loop_control:
     loop_var: ler53_item

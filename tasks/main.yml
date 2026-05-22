@@ -1,98 +1,69 @@
 ---
 - name: update apt cache
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   when: ansible_os_family == 'Debian'
   tags:
   - install
 
-- name: install the required dependencies (Debian) python3
-  apt:
+- name: install the required dependencies (Debian)
+  ansible.builtin.apt:
     name:
     - openssl
-    - python3-boto
+    - python3-boto3
+    - python3-cryptography
     - python3-openssl
     state: present
-  when: ansible_os_family == 'Debian' and ansible_python_version is version('3', '>=')
+  when: ansible_os_family == 'Debian'
   tags:
   - install
 
-- name: install the required dependencies (Debian) python2
-  apt:
-    name:
-    - openssl
-    - python-boto
-    - python-openssl
-    state: present
-  when: ansible_os_family == 'Debian' and ansible_python_version is version('3', '<')
-  tags:
-  - install
-
-- name: install the required dependencies (Red Hat)
-  yum:
+- name: install the required dependencies (Red Hat 8+)
+  ansible.builtin.yum:
     name:
     - openssl
     - python3-pip
     state: present
-  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version is version('8', '>=')
-  tags:
-  - install
-
-- name: install the required dependencies (Red Hat) (Requires EPEL)
-  yum:
-    name:
-    - openssl
-    - python-pip
-    state: present
-  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version is version('8', '<')
-  tags:
-  - install
-
-- name: install the required dependencies (FreeBSD)
-  pkgng:
-    name:
-    - openssl
-    - "py{{ ansible_python.version.major }}{{ ansible_python.version.minor }}-boto3"
-    - "py{{ ansible_python.version.major }}{{ ansible_python.version.minor }}-openssl"
-    state: present
-  when: ansible_os_family == 'FreeBSD'
+  when:
+  - ansible_os_family == 'RedHat'
+  - ansible_distribution_major_version is version('8', '>=')
   tags:
   - install
 
 - name: install the required dependencies (MacOS)
-  homebrew:
+  community.general.homebrew:
     name:
-    - openssl@1.1
+    - openssl@3
     - python3
     state: present
-  become: no
+  become: false
   when: ansible_os_family == 'Darwin'
   tags:
   - install
 
 - name: "create the {{ ler53_cert_dir }} directory"
-  file:
+  ansible.builtin.file:
     path: "{{ ler53_cert_dir }}"
     state: directory
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
-    mode: 0755
+    mode: '0755'
 
 - name: "create the {{ ler53_account_key_dir }} directory"
-  file:
+  ansible.builtin.file:
     path: "{{ ler53_account_key_dir }}"
     state: directory
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
-    mode: 0700
+    mode: '0700'
 
-- name: "importing virtualenv tasks"
-  import_tasks: virtualenv.yml
-  when: ansible_os_family in ['RedHat', 'Darwin']
+- name: include virtualenv tasks
+  ansible.builtin.include_tasks: virtualenv.yml
+  when: ansible_os_family == 'Darwin' or (ansible_os_family == 'RedHat' and ansible_distribution_major_version is version('8', '>='))
 
 - name: generate the private key
-  openssl_privatekey:
+  community.crypto.openssl_privatekey:
     path: "{{ ler53_cert_dir }}/{{ ler53_key_file_name }}"
     size: "{{ ler53_key_size }}"
     owner: "{{ ler53_cert_files_owner }}"
@@ -102,7 +73,7 @@
   - openssl
 
 - name: generate the CSR
-  openssl_csr:
+  community.crypto.openssl_csr:
     path: "{{ ler53_cert_dir }}/{{ ler53_csr_file_name }}"
     privatekey_path: "{{ ler53_cert_dir }}/{{ ler53_key_file_name }}"
     common_name: "{{ ler53_cert_common_name }}"
@@ -117,7 +88,7 @@
   - openssl
 
 - name: generate the Let's Encrypt account key
-  openssl_privatekey:
+  community.crypto.openssl_privatekey:
     path: "{{ ler53_account_key_dir }}/{{ ler53_account_key_file_name }}"
     size: "{{ ler53_account_key_size }}"
     owner: "{{ ler53_cert_files_owner }}"
@@ -127,7 +98,7 @@
   - openssl
 
 - name: delete existing certificate
-  file:
+  ansible.builtin.file:
     path: "{{ ler53_cert_dir }}/{{ ler53_cert_file_name }}"
     state: absent
   when: generate_csr.changed and ler53_new_cert_when_csr_changes
@@ -135,7 +106,7 @@
   - openssl
 
 - name: initiate the Let's Encrypt challenge
-  acme_certificate:
+  community.crypto.acme_certificate:
     acme_version: 2
     acme_directory: "{{ ler53_acme_directory }}"
     challenge: dns-01
@@ -144,11 +115,11 @@
     dest: "{{ ler53_cert_dir }}/{{ ler53_cert_file_name }}"
     account_email: "{{ ler53_account_email }}"
     remaining_days: "{{ ler53_cert_remaining_days_before_renewal }}"
-    terms_agreed: yes
+    terms_agreed: true
   register: lets_encrypt_challenge
 
 - name: create the DNS records for the challenge
-  route53:
+  amazon.aws.route53:
     command: create
     zone: "{{ ler53_route_53_domain | default(omit) }}"
     hosted_zone_id: "{{ ler53_route_53_zone_id | default(omit) }}"
@@ -156,16 +127,16 @@
     type: TXT
     ttl: 5
     value: "\"{{ ler53_item.value['dns-01']['resource_value'] }}\""
-    aws_access_key: "{{ ler53_aws_access_key | default(omit) }}"
-    aws_secret_key: "{{ ler53_aws_secret_key | default(omit) }}"
-    overwrite: yes
-    wait: yes
-  with_dict: "{{ lets_encrypt_challenge['challenge_data'] | default({}) }}"
+    access_key: "{{ ler53_aws_access_key | default(omit) }}"
+    secret_key: "{{ ler53_aws_secret_key | default(omit) }}"
+    overwrite: true
+    wait: true
+  loop: "{{ lets_encrypt_challenge['challenge_data'] | default({}) | dict2items }}"
   loop_control:
     loop_var: ler53_item
 
 - name: validate the Let's Encrypt challenge
-  acme_certificate:
+  community.crypto.acme_certificate:
     acme_version: 2
     acme_directory: "{{ ler53_acme_directory }}"
     challenge: dns-01
@@ -181,11 +152,11 @@
   register: lets_encrypt_validation_result
 
 - name: set the ler53_cert_changed fact
-  set_fact:
+  ansible.builtin.set_fact:
     ler53_cert_changed: "{{ lets_encrypt_validation_result.changed | bool }}"
 
 - name: delete the DNS records for the challenge
-  route53:
+  amazon.aws.route53:
     command: delete
     zone: "{{ ler53_route_53_domain | default(omit) }}"
     hosted_zone_id: "{{ ler53_route_53_zone_id | default(omit) }}"
@@ -193,28 +164,28 @@
     type: TXT
     ttl: 5
     value: "\"{{ ler53_item.value['dns-01']['resource_value'] }}\""
-    aws_access_key: "{{ ler53_aws_access_key | default(omit) }}"
-    aws_secret_key: "{{ ler53_aws_secret_key | default(omit) }}"
-  with_dict: "{{ lets_encrypt_challenge['challenge_data'] | default({}) }}"
+    access_key: "{{ ler53_aws_access_key | default(omit) }}"
+    secret_key: "{{ ler53_aws_secret_key | default(omit) }}"
+  loop: "{{ lets_encrypt_challenge['challenge_data'] | default({}) | dict2items }}"
   loop_control:
     loop_var: ler53_item
 
 - name: set the cert file permissions
-  file:
+  ansible.builtin.file:
     path: "{{ ler53_cert_dir }}/{{ ler53_cert_file_name }}"
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
 
 - name: set the intermediate cert file permissions
-  file:
+  ansible.builtin.file:
     path: "{{ ler53_cert_dir }}/{{ ler53_intermediate_file_name }}"
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"
     mode: "{{ ler53_cert_files_mode }}"
 
 - name: set the full cert chain file permissions
-  file:
+  ansible.builtin.file:
     path:  "{{ ler53_cert_dir }}/{{ ler53_cert_and_intermediate_file_name }}"
     owner: "{{ ler53_cert_files_owner }}"
     group: "{{ ler53_cert_files_group }}"

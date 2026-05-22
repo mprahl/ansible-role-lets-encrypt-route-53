@@ -4,11 +4,21 @@ galaxy_info:
     automates the generation of Let's Encrypt signed certificates with DNS
     challenges on Amazon's Route 53 (AWS)
   license: MIT
-  min_ansible_version: 2.7
+  min_ansible_version: "2.14"
   platforms:
-  - name: FreeBSD
-  - name: GenericLinux
-  - name: macOS
+  - name: Debian
+    versions:
+    - all
+  - name: Ubuntu
+    versions:
+    - all
+  - name: EL
+    versions:
+    - '8'
+    - '9'
+  - name: MacOSX
+    versions:
+    - all
   galaxy_tags:
   - letsencrypt
   - route53

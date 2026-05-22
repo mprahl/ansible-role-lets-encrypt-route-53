@@ -3,19 +3,24 @@
 This is an Ansible role that automates the generation of Let's Encrypt signed certificates with DNS
 challenges on Amazon's Route 53 (AWS).
 
-Please note that as part of this role, `openssl`, [boto](https://github.com/boto/boto), and
-[pyOpenSSL](https://github.com/pyca/pyopenssl) will be installed. If you are using CentOS, RHEL, or
-Mac OS, the role will install `pip` and then install `boto` and `pyOpenSSL` in a Python virtualenv
-instead because the packaged versions are not available or not recent enough. Please note that
-[EPEL](https://fedoraproject.org/wiki/EPEL) is required on CentOS and RHEL.
+When this role manages dependencies for you, Debian-family systems install `openssl`,
+`python3-boto3`, `python3-cryptography`, and `python3-openssl` from distribution packages. Red Hat
+Enterprise Linux 8+ and macOS use a Python 3 virtualenv for the AWS and crypto Python libraries
+required by the role.
 
-If you are not using this role on Debian/Ubuntu, CentOS/Red Hat, Mac OS, or FreeBSD, `openssl`,
-`boto`, and `pyOpenSSL` must be installed manually before using this role.
+If you are not using this role on Debian/Ubuntu, Red Hat Enterprise Linux 8+, or macOS, you must
+install `openssl`, `boto3`, `botocore`, and a recent Python crypto stack manually before using the
+role.
 
 ## Requirements
 
-Ansible 2.7+ is required for this role. If you are using an older version of Ansible, use version
-4.2.1 of this role. This role also must be run by root or through sudo/become.
+Ansible 2.14+ is required for this role. This role also must be run by root or through sudo/become.
+
+The role uses modules from these collections:
+
+```bash
+ansible-galaxy collection install amazon.aws community.crypto community.general
+```
 
 ## Role tags
 
@@ -25,7 +30,7 @@ Ansible 2.7+ is required for this role. If you are using an older version of Ans
 ## Role Variables
 
 #### Facts Set By The Role
-* **ler53_cert_changed** - this is set to `True` when the certificate is created or renewed.
+* **ler53_cert_changed** - this is set to `true` when the certificate is created or renewed.
 
 #### Required Variables
 * **ler53_route_53_domain** - the Route 53 (AWS) domain the SSL certificate is being generated
@@ -58,13 +63,13 @@ Ansible 2.7+ is required for this role. If you are using an older version of Ans
 * **ler53_cert_and_intermediate_file_name** - the name of the file created with the certificate and
   the intermediate CA concatenated together. This defaults to `{{ ler53_cert_common_name }}.pem`.
 * **ler53_cert_files_mode** - the file mode/permissions to force on the private key, CSR, and
-  certificate. This defaults to `0600`.
+  certificate. This defaults to `'0600'`.
 * **ler53_cert_files_owner** - the file owner to force on the private key, CSR, and certificate.
   This defaults to `root`.
 * **ler53_cert_files_group** - the file group to force on the private key, CSR, and certificate.
   This defaults to `root`.
 * **ler53_account_email** - an email to associate with your Let's Encrypt account. Please view the
-  [Let's Encrypt Module](https://docs.ansible.com/ansible/letsencrypt_module.html#requirements-on-host-that-executes-module)
+  [community.crypto.acme_certificate module](https://docs.ansible.com/projects/ansible/latest/collections/community/crypto/acme_certificate_module.html)
   for more information.
 * **ler53_account_key_size** - the size of the Let's Encrypt account key that is generated if it
   isn't present. This defaults to `2048`.
@@ -98,7 +103,7 @@ Ansible 2.7+ is required for this role. If you are using an older version of Ans
 ```yaml
 - name: Generate an SSL certificate for host.example.com
   hosts: host
-  become: yes
+  become: true
 
   vars:
   - ler53_cert_common_name: host.example.com

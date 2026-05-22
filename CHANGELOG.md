@@ -4,6 +4,12 @@
 
 See the change log in the GitHub release notes.
 
+### Unreleased
+
+- Remove FreeBSD support from the role.
+- Modernize the role for current Ansible releases with dynamic task includes,
+  `loop`, fully qualified module names, and Python 3 AWS dependencies.
+
 ### v5.1.2
 
 - Support newer versions of the `openssl_privatekey_info` Ansible module (#43)
